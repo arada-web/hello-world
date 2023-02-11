@@ -1,0 +1,55 @@
+config ips sensor
+    edit "block-botnets"
+        set block-malicious-url enable
+        set scan-botnet-connections block
+    next
+end
+config dnsfilter profile
+    edit "block-gambling"
+        set comment "Block gambling sites"
+        config ftgd-dns
+            config filters
+                edit 1
+                    set category 11
+                    set action block
+                next
+            end
+        end
+    next
+end
+config webfilter profile
+    edit "block-gambling"
+        set comment "Block gambling sites"
+        config ftgd-wf
+            unset options
+            config filters
+                edit 1
+                    set category 11
+                    set action block
+                next
+            end
+        end
+    next
+end
+config firewall policy
+    edit 0
+        set name "lan-to-wan"
+        set action accept
+        set srcintf "port2"
+        set dstintf "port1"
+        set nat enable
+        set srcaddr "all"
+        set dstaddr "all"
+        set schedule "always"
+        set service "ALL"
+        set utm-status enable
+		set inspection-mode proxy
+        set logtraffic all
+		set logtraffic-start enable
+        set ssl-ssh-profile "deep-inspection"
+        set av-profile "default"
+        set webfilter-profile "block-gambling"
+        set dnsfilter-profile "block-gambling"
+        set ips-sensor "block-botnets"
+    next
+end
